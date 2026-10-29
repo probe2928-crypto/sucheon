@@ -540,7 +540,9 @@ form.inq-form{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:24px 3
       .then(function(){form.reset();document.getElementById('inqBody').hidden=true;document.getElementById('inqDone').hidden=false})
       .catch(function(j){var m=(j&&j.message)?String(j.message):'';
         if(/activat/i.test(m)){msg.textContent='처음 한 번 메일 인증이 필요합니다. 수신 메일함에서 FormSubmit 인증 메일을 확인해 주세요.';msg.className='msg err';return}
-        msg.innerHTML='전송하지 못했습니다'+(m?' ('+m.replace(/[<>&]/g,'')+')':'')+'. 잠시 후 다시 시도하시거나 <a href="mailto:'+INQ_TO+'">'+INQ_TO+'</a>로 보내 주세요.';msg.className='msg err'})
+        var body='문의유형: '+fd.get('문의유형')+'\n회사명: '+fd.get('회사명')+'\n담당자: '+fd.get('담당자')+'\n연락처: '+fd.get('연락처')+'\n이메일: '+(fd.get('email')||'')+'\n\n'+fd.get('문의내용');
+        var href='mailto:'+INQ_TO+'?subject='+encodeURIComponent(fd.get('_subject'))+'&body='+encodeURIComponent(body);
+        msg.innerHTML='자동 전송이 안 됐습니다'+(m?' ('+m.replace(/[<>&]/g,'')+')':'')+'. <a href="'+href+'">메일 앱으로 바로 보내기</a>';msg.className='msg err'})
       .finally(function(){btn.disabled=false});
   });
 
