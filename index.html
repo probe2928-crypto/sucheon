@@ -466,7 +466,7 @@ form.inq-form{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:24px 3
       <div class="fld"><label for="f-ph">연락처 <em>*</em></label><input id="f-ph" name="연락처" type="tel" required autocomplete="tel" placeholder="010-0000-0000"></div>
       <div class="fld"><label for="f-em">이메일</label><input id="f-em" name="email" type="email" autocomplete="email" placeholder="회신 받을 메일"></div>
       <div class="fld full"><label for="f-msg">문의 내용 <em>*</em></label><textarea id="f-msg" name="문의내용" required placeholder="필요한 품목, 수량, 희망 일정 등을 적어 주세요."></textarea></div>
-      <input class="hp" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <input class="hp" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
       <label class="agree"><input type="checkbox" id="f-ag" required><span>문의 응대를 위해 위 정보를 수집·이용하는 데 동의합니다. (회신 후 보관 목적 외 사용하지 않음)</span></label>
       <div class="submit">
         <p class="msg" id="inqMsg" role="status" aria-live="polite"></p>
@@ -532,16 +532,16 @@ form.inq-form{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:24px 3
     var em=form.email.value.trim();
     if(em&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){msg.textContent='이메일 형식을 확인해 주세요.';msg.className='msg err';form.email.focus();return}
     var fd=new FormData(form);
-    fd.append('_subject','[수천상사 홈페이지 문의] '+fd.get('문의유형')+' - '+fd.get('회사명'));
-    fd.append('_template','table');fd.append('_captcha','false');
+    var subj='[수천상사 홈페이지 문의] '+fd.get('문의유형')+' - '+fd.get('회사명');
+    fd.append('access_key','83d3c29c-e76f-4daa-83a2-3b4f4cc9ee02');fd.append('subject',subj);fd.append('from_name','수천상사 홈페이지');if(!fd.get('email'))fd.delete('email');if(!fd.get('botcheck'))fd.delete('botcheck');
     btn.disabled=true;msg.textContent='보내는 중…';msg.className='msg';
-    fetch('https://formsubmit.co/ajax/'+INQ_TO,{method:'POST',headers:{'Accept':'application/json'},body:fd})
+    fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Accept':'application/json'},body:fd})
       .then(function(r){return r.json().then(function(j){if(!r.ok||String(j.success)==='false')throw j;return j})})
       .then(function(){form.reset();document.getElementById('inqBody').hidden=true;document.getElementById('inqDone').hidden=false})
       .catch(function(j){var m=(j&&j.message)?String(j.message):'';
         if(/activat/i.test(m)){msg.textContent='처음 한 번 메일 인증이 필요합니다. 수신 메일함에서 FormSubmit 인증 메일을 확인해 주세요.';msg.className='msg err';return}
         var body='문의유형: '+fd.get('문의유형')+'\n회사명: '+fd.get('회사명')+'\n담당자: '+fd.get('담당자')+'\n연락처: '+fd.get('연락처')+'\n이메일: '+(fd.get('email')||'')+'\n\n'+fd.get('문의내용');
-        var href='mailto:'+INQ_TO+'?subject='+encodeURIComponent(fd.get('_subject'))+'&body='+encodeURIComponent(body);
+        var href='mailto:'+INQ_TO+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
         msg.innerHTML='자동 전송이 안 됐습니다'+(m?' ('+m.replace(/[<>&]/g,'')+')':'')+'. <a href="'+href+'">메일 앱으로 바로 보내기</a>';msg.className='msg err'})
       .finally(function(){btn.disabled=false});
   });
