@@ -520,7 +520,7 @@ form.inq-form{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:24px 3
 
 
   // inquiry dialog -> email via FormSubmit
-  var INQ_TO='probe292@naver.com';
+  var INQ_TO='probe2928@gmail.com';
   var dlg=document.getElementById('inq'),form=document.getElementById('inqForm'),btn=document.getElementById('inqBtn'),msg=document.getElementById('inqMsg');
   function openInq(e){if(!dlg.showModal)return;e.preventDefault();form.hidden=false;document.getElementById('inqBody').hidden=false;document.getElementById('inqDone').hidden=true;msg.textContent='';msg.className='msg';dlg.showModal();setTimeout(function(){document.getElementById('f-co').focus()},50)}
   document.querySelectorAll('[data-inquiry]').forEach(function(a){a.addEventListener('click',openInq)});
